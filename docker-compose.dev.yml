@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  skprods-nginx:
+    container_name: skprods-nginx-dev
+    ports:
+        - "8401:80"
+    volumes:
+      - ./deploy/nginx/dev.conf:/etc/nginx/conf.d/default.conf
+
+  skprods-php-fpm:
+    container_name: skprods-php-fpm-dev
+
+  skprods-percona:
+    container_name: skprods-percona-dev
+    ports:
+      - "3346:3306"
+    volumes:
+      - skprods-dev-database-data:/var/lib/mysql
+
+  skprods-redis:
+    container_name: skprods-redis-dev
+    ports:
+      - "6391:6379"
+    volumes:
+      - skprods-dev-redis-data:/data
+
+volumes:
+  skprods-dev-database-data: # данные БД
+  skprods-dev-redis-data: # данные Redis

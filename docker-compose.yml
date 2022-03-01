@@ -1,0 +1,62 @@
+version: "3.7"
+
+services:
+    skprods-nginx:
+        image: nginx:1.17
+        environment:
+            TZ: "Europe/Moscow"
+        volumes:
+            - ./storage/logs/nginx:/var/log/nginx
+            - ./:/var/www
+        depends_on:
+            - skprods-php-fpm
+
+    skprods-php-fpm:
+        build:
+            context: .
+            dockerfile: ./deploy/php-fpm/Dockerfile
+        volumes:
+            - ./deploy/php-fpm/php.ini:/usr/local/etc/php/php.ini
+            - ./deploy/php-fpm/php.ini:/usr/local/etc/php/php.ini-development
+            - ./deploy/php-fpm/php.ini:/usr/local/etc/php/php.ini-production
+            - ./deploy/php-fpm/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+            - ./app:/var/www/app
+            - ./bootstrap:/var/www/bootstrap
+            - ./config:/var/www/config
+            - ./database:/var/www/database
+            - ./public:/var/www/public
+            - ./resources:/var/www/resources
+            - ./routes:/var/www/routes
+            - ./storage:/var/www/storage
+            - ./tests:/var/www/tests
+            - ./.env:/var/www/.env
+            - ./artisan:/var/www/artisan
+            - ./composer.json:/var/www/composer.json
+            - ./composer.lock:/var/www/composer.lock
+            - ./phpunit.xml:/var/www/phpunit.xml
+        depends_on:
+            - skprods-percona
+            - skprods-redis
+        environment:
+            TZ: "Europe/Moscow"
+
+    skprods-percona:
+        image: percona:8.0
+        restart: always
+        environment:
+            TZ: "Europe/Moscow"
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+        volumes:
+            - ./deploy/percona/init-testing-db.sql:/docker-entrypoint-initdb.d/init-testing-db.sql
+            - ./deploy/percona/dump.sh:/dump.sh
+            - ./deploy/percona/restore.sh:/restore.sh
+            - ./backups:/home
+
+    skprods-redis:
+        image: redis:6
+        restart: always
+        environment:
+            TZ: "Europe/Moscow"
