@@ -14,7 +14,7 @@ services:
   skprods-percona:
     container_name: skprods-percona
     ports:
-      - "3326:3306"
+      - "3308:3306"
     volumes:
       - skprods-database-data:/var/lib/mysql
 

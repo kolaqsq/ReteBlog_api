@@ -10,39 +10,36 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * The path to the "home" route for your application.
-     *
-     * This is used by Laravel authentication to redirect users after login.
-     *
-     * @var string
-     */
-    public const HOME = '/home';
+    public const HOME = '/';
 
-    /**
-     * Define your route model bindings, pattern filters, etc.
-     *
-     * @return void
-     */
+    protected $namespace = 'App\\Http\\Controllers';
+    protected $userNamespace = 'App\\Http\\Controllers\\User';
+    protected $adminNamespace = 'App\\Http\\Controllers\\Admin';
+
     public function boot()
     {
         $this->configureRateLimiting();
-
-        $this->routes(function () {
-            Route::prefix('api')
-                ->middleware('api')
-                ->group(base_path('routes/api.php'));
-
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
-        });
+        $this->defineRoutes();
     }
 
-    /**
-     * Configure the rate limiters for the application.
-     *
-     * @return void
-     */
+    private function defineRoutes()
+    {
+        Route::prefix('api/v1')
+            ->middleware(['api'])
+            ->namespace($this->namespace)
+            ->group(base_path('routes/auth.php'));
+
+        Route::prefix('api/v1')
+            ->middleware(['api', 'auth'])
+            ->namespace($this->userNamespace)
+            ->group(base_path('routes/user.php'));
+
+        Route::prefix('api/v1/admin/')
+            ->middleware(['api', 'auth', 'role:admin'])
+            ->namespace($this->adminNamespace)
+            ->group(base_path('routes/admin.php'));
+    }
+
     protected function configureRateLimiting()
     {
         RateLimiter::for('api', function (Request $request) {
