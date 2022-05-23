@@ -27,14 +27,14 @@ class UserManager
 
         if (!$this->user) {
             throw ValidationException::withMessages([
-                "email" => 'Неверный email и/или пароль.',
-            ]);
+                                                        "email" => 'Неверный email и/или пароль.',
+                                                    ]);
         }
 
         if (!Hash::check($password, $this->user->password)) {
             throw ValidationException::withMessages([
-                "email" => 'Неверный email и/или пароль.',
-            ]);
+                                                        "email" => 'Неверный email и/или пароль.',
+                                                    ]);
         }
 
         $ttl = ($remember) ? env('JWT_TTL_REMEMBER') : env('JWT_TTL');
@@ -69,5 +69,19 @@ class UserManager
 //        $this->statManager->create(Stat::USER_MODEL, $this->user->id, Stat::CREATED_ACTION);
 
         return $this->user;
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function checkUsername($username)
+    {
+        $this->user = User::findByUsername($username);
+
+        if ($this->user) {
+            throw ValidationException::withMessages([
+                                                        "username" => 'Имя пользователя занято.',
+                                                    ]);
+        }
     }
 }

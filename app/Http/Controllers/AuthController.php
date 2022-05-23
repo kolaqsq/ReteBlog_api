@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CheckUsernameRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Managers\UserManager;
@@ -24,13 +25,19 @@ class AuthController extends Controller
 
         $token = $this->userManager->auth($email, $password, $remember);
 
-        return new JsonResponse([], 200, [ 'Authorization' => "Bearer $token" ]);
+        return new JsonResponse([], 200, ['Authorization' => "Bearer $token"]);
     }
 
     public function register(RegisterRequest $request): JsonResponse
     {
         $token = $this->userManager->register($request->validated());
 
-        return new JsonResponse([], 201, [ 'Authorization' => "Bearer $token" ]);
+        return new JsonResponse([], 201, ['Authorization' => "Bearer $token"]);
+    }
+
+    public function checkUsername(CheckUsernameRequest $request): JsonResponse
+    {
+        $this->userManager->checkUsername($request);
+        return new JsonResponse([], 200);
     }
 }
