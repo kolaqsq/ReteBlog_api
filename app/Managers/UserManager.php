@@ -71,10 +71,24 @@ class UserManager
         return $this->user;
     }
 
+    public function update(User $user, array $params): void
+    {
+        if (isset($params['password'])) {
+            $params['password'] = Hash::make($params['password']);
+        }
+
+        if ($user->email != $params['email']) {
+            $user->email_verified_at = null;
+        }
+
+        $user->fill($params);
+        $user->save();
+    }
+
     /**
      * @throws ValidationException
      */
-    public function checkUsername($username)
+    public function checkUsername($username): void
     {
         $this->user = User::findByUsername($username);
 
