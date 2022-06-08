@@ -27,14 +27,14 @@ class UserManager
 
         if (!$this->user) {
             throw ValidationException::withMessages([
-                "email" => 'Неверный email и/или пароль.',
-            ]);
+                                                        "email" => 'Неверный email и/или пароль.',
+                                                    ]);
         }
 
         if (!Hash::check($password, $this->user->password)) {
             throw ValidationException::withMessages([
-                "email" => 'Неверный email и/или пароль.',
-            ]);
+                                                        "email" => 'Неверный email и/или пароль.',
+                                                    ]);
         }
 
         $ttl = ($remember) ? env('JWT_TTL_REMEMBER') : env('JWT_TTL');
@@ -64,10 +64,40 @@ class UserManager
         $this->user->fill($params);
         $this->user->save();
 
+        $this->user->assignRole('user');
+
 //        $this->user = RoleManager::setUserRole($this->user);
 
 //        $this->statManager->create(Stat::USER_MODEL, $this->user->id, Stat::CREATED_ACTION);
 
         return $this->user;
+    }
+
+    public function update(User $user, array $params): void
+    {
+        if (isset($params['password'])) {
+            $params['password'] = Hash::make($params['password']);
+        }
+
+        if ($user->email != $params['email']) {
+            $user->email_verified_at = null;
+        }
+
+        $user->fill($params);
+        $user->save();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function checkUsername($username): void
+    {
+        $this->user = User::findByUsername($username);
+
+        if ($this->user) {
+            throw ValidationException::withMessages([
+                                                        "username" => 'Имя пользователя занято.',
+                                                    ]);
+        }
     }
 }
