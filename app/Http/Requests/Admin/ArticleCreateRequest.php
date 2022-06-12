@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -10,7 +10,7 @@ class ArticleCreateRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'unique:articles,slug'],
+//            'slug' => ['nullable', 'string', 'unique:articles,slug'],
             'content' => ['required', 'string'],
         ];
     }

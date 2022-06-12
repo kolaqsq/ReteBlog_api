@@ -13,14 +13,23 @@ class ArticleManager
         $this->article = $article;
     }
 
-    public function create(array $data): Article
+    public function create(array $params): void
     {
-        if (!isset($data['slug'])) {
-            $data['slug'] = Article::getSlugFromTitle($data['title']);
-        }
-
         $this->article = app(Article::class);
-        $this->article->fill($data);
+        $this->article->fill($params);
+        $this->article->user_id = $params['user_id'];
+        $this->article->save();
+    }
 
+    public function update(Article $article, array $params): void
+    {
+        $article->slug = null;
+        $article->fill($params);
+        $article->save();
+    }
+
+    public function delete(Article $article): void
+    {
+        $article->delete();
     }
 }
