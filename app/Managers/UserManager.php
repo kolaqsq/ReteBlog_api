@@ -88,6 +88,20 @@ class UserManager
     /**
      * @throws ValidationException
      */
+    public function delete($user, $password)
+    {
+        if (Hash::check($password, $user->password)) {
+            $user->delete();
+        } else {
+            throw ValidationException::withMessages([
+                                                        "email" => 'Неверный пароль.',
+                                                    ]);
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
     public function checkUsername($username): void
     {
         $this->user = User::findByUsername($username);

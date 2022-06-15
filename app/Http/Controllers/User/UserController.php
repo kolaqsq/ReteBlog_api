@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CheckUsernameRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\User\UserDeletionRequest;
 use App\Managers\UserManager;
 use Illuminate\Http\JsonResponse;
 
@@ -27,5 +27,10 @@ class UserController extends Controller
         $user = auth()->user();
         $this->userManager->update($user, $request->validated());
         return new JsonResponse([], 200);
+    }
+
+    public function delete(UserDeletionRequest $request)
+    {
+        $this->userManager->delete(auth()->user(), $request->validated()['password']);
     }
 }
