@@ -64,6 +64,8 @@ class UserManager
         $this->user->fill($params);
         $this->user->save();
 
+        $this->user->assignRole('user');
+
 //        $this->user = RoleManager::setUserRole($this->user);
 
 //        $this->statManager->create(Stat::USER_MODEL, $this->user->id, Stat::CREATED_ACTION);
