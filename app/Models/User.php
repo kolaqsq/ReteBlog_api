@@ -63,6 +63,11 @@ class User extends Authenticatable implements JWTSubject
         return self::query()->where('email', $email)->first();
     }
 
+    public static function findByUsername(string $username): self|null
+    {
+        return self::query()->where('username', $username)->first();
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
