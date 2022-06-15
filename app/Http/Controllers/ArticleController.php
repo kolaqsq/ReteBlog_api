@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Managers\ArticleManager;
 use App\Models\Article;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
+    private ArticleManager $articleManager;
+
+    public function __construct()
+    {
+        $this->articleManager = app(ArticleManager::class);
+    }
+
     public function listAll(): JsonResponse
     {
         return response()->json(
@@ -20,6 +28,7 @@ class ArticleController extends Controller
 
     public function showArticle($slug): JsonResponse
     {
+        $this->articleManager->viewCount(session(), Article::where('slug', $slug)->first());
         return response()->json(Article::where('slug', $slug)->first());
     }
 

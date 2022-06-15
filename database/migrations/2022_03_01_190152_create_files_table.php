@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('extension');
             $table->integer('size')->unsigned();
             $table->string('disk')->default('public');
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

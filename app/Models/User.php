@@ -59,6 +59,13 @@ class User extends Authenticatable implements JWTSubject
         'updated_at' => 'datetime',
     ];
 
+    public function reactions()
+    {
+        return $this->belongsToMany(Article::class, 'user_reaction')
+            ->withPivot('like', 'dislike')
+            ->withTimestamps();
+    }
+
     public static function findByEmail(string $email): self|null
     {
         return self::query()->where('email', $email)->first();
