@@ -66,6 +66,11 @@ class User extends Authenticatable implements JWTSubject
             ->withTimestamps();
     }
 
+    public function avatar()
+    {
+        return $this->hasOne(File::class);
+    }
+
     public static function findByEmail(string $email): self|null
     {
         return self::query()->where('email', $email)->first();

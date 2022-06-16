@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('password');
+            $table->foreignId('file_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
