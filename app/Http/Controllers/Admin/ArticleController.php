@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ArticleCreateRequest;
+use App\Http\Requests\Admin\ArticleUpdateRequest;
 use App\Http\Requests\User\FileDeletionRequest;
 use App\Http\Requests\User\FileUploadRequest;
 use App\Managers\ArticleManager;
@@ -64,7 +65,7 @@ class ArticleController extends Controller
         return new JsonResponse([], 200);
     }
 
-    public function uploadFile($slug, FileUploadRequest $request)
+    public function uploadFile($slug, ArticleUpdateRequest $request)
     {
         $data = array_merge($request->validated(), [
             'user_id' => $request->user()->id,
