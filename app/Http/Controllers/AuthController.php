@@ -25,14 +25,14 @@ class AuthController extends Controller
 
         $token = $this->userManager->auth($email, $password, $remember);
 
-        return new JsonResponse([], 200, ['Authorization' => "Bearer $token"]);
+        return new JsonResponse(['Authorization' => "Bearer $token"], 200);
     }
 
     public function register(RegisterRequest $request): JsonResponse
     {
         $token = $this->userManager->register($request->validated());
 
-        return new JsonResponse([], 201, ['Authorization' => "Bearer $token"]);
+        return new JsonResponse(['Authorization' => "Bearer $token"], 201,);
     }
 
     public function checkUsername(CheckUsernameRequest $request): JsonResponse
