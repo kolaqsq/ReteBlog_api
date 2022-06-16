@@ -46,4 +46,10 @@ class Article extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function files()
+    {
+        return $this->belongsToMany(File::class, 'articles_files')
+            ->withTimestamps();
+    }
 }
