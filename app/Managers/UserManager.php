@@ -2,6 +2,7 @@
 
 namespace App\Managers;
 
+use App\Models\File;
 use App\Models\User;
 use App\Traits\HasUsername;
 use Illuminate\Support\Facades\Hash;
@@ -83,6 +84,39 @@ class UserManager
 
         $user->fill($params);
         $user->save();
+    }
+
+    public function updateAvatar($user, array $params)
+    {
+        $fileManager = app(FileManager::class);
+
+        if (isset($user->file_id)) {
+            $fileManager->delete($user, File::find($user->file_id)->filename);
+        }
+
+        $file = $fileManager->save($params);
+
+        $user->file_id = $file->id;
+        $user->save();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function delete($user, $password)
+    {
+        $fileManager = app(FileManager::class);
+
+        if (Hash::check($password, $user->password)) {
+            if (isset($user->file_id)) {
+                $fileManager->delete($user, File::find($user->file_id)->filename);
+            }
+            $user->delete();
+        } else {
+            throw ValidationException::withMessages([
+                                                        "email" => 'Неверный пароль.',
+                                                    ]);
+        }
     }
 
     /**

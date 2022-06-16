@@ -3,8 +3,13 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('profile', 'UserController@profile');
-Route::post('profile', 'UserController@update');
+Route::put('profile', 'UserController@update');
+Route::delete('profile', 'UserController@delete');
+Route::post('logout', 'AuthController@logout');
+Route::post('profile/avatar', 'UserController@updateAvatar');
+
 Route::post('file', 'FileController@upload');
 Route::delete('file', 'FileController@delete');
+
 Route::put('articles/{slug}/like', 'ArticleController@like');
 Route::put('articles/{slug}/dislike', 'ArticleController@dislike');
