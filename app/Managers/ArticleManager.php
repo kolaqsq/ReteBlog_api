@@ -16,28 +16,45 @@ class ArticleManager
 
     public function create(array $params): void
     {
+        $fileManager = app(FileManager::class);
+        $file = $fileManager->save($params);
+
         $this->article = app(Article::class);
         $this->article->fill($params);
         $this->article->user_id = $params['user_id'];
+        $this->article->file_id = $file->id;
+        $this->article->poster_link = asset('storage/' . $file->filename);
         $this->article->save();
     }
 
     public function update(Article $article, array $params): void
     {
+        $fileManager = app(FileManager::class);
+
+        if (isset($article->file_id)) {
+            $fileManager->delete($article, File::find($article->file_id)->filename);
+        }
+
+        $file = $fileManager->save($params);
+
         $article->slug = null;
         $article->fill($params);
+        $article->file_id = $file->id;
+        $article->poster_link = asset('storage/' . $file->filename);
         $article->save();
     }
 
     public function delete(Article $article): void
     {
+        $fileManager = app(FileManager::class);
+
         if ($article->files()) {
-            $fileManager = app(FileManager::class);
             foreach ($article->files as $file){
                 $fileManager->delete(auth()->user(), $file->filename);
             }
         }
 
+        $fileManager->delete($article, File::find($article->file_id)->filename);
         $article->delete();
     }
 

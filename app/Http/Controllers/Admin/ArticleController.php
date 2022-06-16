@@ -26,12 +26,32 @@ class ArticleController extends Controller
             'user_id' => $request->user()->id,
         ]);
 
+        if (!isset($data['disk'])) {
+            $data['disk'] = 'public';
+        }
+
+        if (!isset($data['path'])) {
+            $data['path'] = '';
+        }
+
         $this->articleManager->create($data);
         return new JsonResponse([], 200);
     }
 
     public function update($slug, ArticleCreateRequest $request): JsonResponse
     {
+        $data = array_merge($request->validated(), [
+            'user_id' => $request->user()->id,
+        ]);
+
+        if (!isset($data['disk'])) {
+            $data['disk'] = 'public';
+        }
+
+        if (!isset($data['path'])) {
+            $data['path'] = '';
+        }
+
         $article = Article::where('slug', $slug)->first();
         $this->articleManager->update($article, $request->validated());
         return new JsonResponse([], 200);

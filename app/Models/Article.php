@@ -18,6 +18,7 @@ class Article extends Model
         'views',
         'likes',
         'dislikes',
+        'poster_link',
     ];
 
 //    protected $visible = [
@@ -51,5 +52,10 @@ class Article extends Model
     {
         return $this->belongsToMany(File::class, 'articles_files')
             ->withTimestamps();
+    }
+
+    public function poster()
+    {
+        return $this->hasOne(File::class);
     }
 }
