@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Managers\ArticleManager;
 use App\Models\Article;
+use App\Models\File;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -21,15 +22,21 @@ class ArticleController extends Controller
         return response()->json(
             Article::orderBy('updated_at', 'desc')->cursorPaginate(
                 $perPage = 16,
-                $columns = ['title', 'slug', 'views', 'likes', 'dislikes',]
+                $columns = ['title', 'slug', 'updated_at', 'poster_link']
             )
         );
     }
 
     public function showArticle($slug): JsonResponse
     {
+        $article = Article::where('slug', $slug)->first();
+        $articleResponse = json_encode($article);
+
         $this->articleManager->viewCount(session(), Article::where('slug', $slug)->first());
-        return response()->json(Article::where('slug', $slug)->first());
+        return response()->json(array_merge(
+                                    json_decode($articleResponse, true),
+                                    ['author' => $article->user->first_name . ' ' . $article->user->first_name]
+                                ));
     }
 
     public function search(Request $request): JsonResponse
@@ -40,7 +47,7 @@ class ArticleController extends Controller
                 ->orderBy('updated_at', 'desc')
                 ->cursorPaginate(
                     $perPage = 16,
-                    $columns = ['title', 'slug', 'views', 'likes', 'dislikes',]
+                    $columns = ['title', 'slug', 'updated_at', 'poster_link']
                 )
         );
     }

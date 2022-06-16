@@ -12,6 +12,9 @@ class ArticleCreateRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
 //            'slug' => ['nullable', 'string', 'unique:articles,slug'],
             'content' => ['required', 'string'],
+            'file' => ['required', 'image', 'max:10240'],
+            'path' => ['string'],
+            'disk' => ['string'],
         ];
     }
 }

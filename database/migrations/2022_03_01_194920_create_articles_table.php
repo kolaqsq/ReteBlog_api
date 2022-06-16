@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('content');
             $table->foreignId('user_id')->constrained();
+            $table->foreignId('file_id');
+            $table->string('poster_link');
             $table->integer('views')->unsigned()->default(0);
             $table->integer('likes')->unsigned()->default(0);
             $table->integer('dislikes')->unsigned()->default(0);
