@@ -61,7 +61,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function reactions()
     {
-        return $this->belongsToMany(Article::class, 'user_reaction')
+        return $this->belongsToMany(Article::class, 'users_reactions')
             ->withPivot('like', 'dislike')
             ->withTimestamps();
     }

@@ -3,8 +3,7 @@
 namespace App\Managers;
 
 use App\Models\Article;
-use App\Models\User;
-use phpDocumentor\Reflection\Types\Boolean;
+use App\Models\File;
 
 class ArticleManager
 {
@@ -32,6 +31,13 @@ class ArticleManager
 
     public function delete(Article $article): void
     {
+        if ($article->files()) {
+            $fileManager = app(FileManager::class);
+            foreach ($article->files as $file){
+                $fileManager->delete(auth()->user(), $file->filename);
+            }
+        }
+
         $article->delete();
     }
 
@@ -81,5 +87,26 @@ class ArticleManager
             $article->increment('views');
             session()->push('viewed_article', $article->id);
         }
+    }
+
+    public function uploadFile($article, array $params)
+    {
+        $fileManager = app(FileManager::class);
+        $file = $fileManager->save($params);
+
+        if (!$article->files()->where('file_id', $file->id)->first()) {
+            $article->files()->attach($file->id);
+        }
+
+        return $file->filename;
+    }
+
+    public function deleteFile($user, $article, $filename){
+        $fileManager = app(FileManager::class);
+        $fileEntry = File::where('filename', $filename)->first();
+
+        $article->files()->detach($fileEntry->id);
+
+        $fileManager->delete($user, $filename);
     }
 }

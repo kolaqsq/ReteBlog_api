@@ -53,7 +53,7 @@ class UserController extends Controller
         }
 
         if (!isset($data['path'])) {
-            $data['path'] = '';
+            $data['path'] = 'avatar';
         }
 
         return $this->userManager->updateAvatar(auth()->user(), $data);
