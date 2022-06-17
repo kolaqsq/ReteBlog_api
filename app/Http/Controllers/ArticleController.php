@@ -20,9 +20,9 @@ class ArticleController extends Controller
     public function listAll(): JsonResponse
     {
         return response()->json(
-            Article::orderBy('updated_at', 'desc')->cursorPaginate(
+            Article::orderBy('created_at', 'desc')->cursorPaginate(
                 $perPage = 16,
-                $columns = ['title', 'slug', 'updated_at', 'poster_link']
+                $columns = ['title', 'slug', 'created_at', 'poster_link']
             )
         );
     }
@@ -44,10 +44,10 @@ class ArticleController extends Controller
         return response()->json(
             Article::where('title', 'like', '%' . $request->search . '%')
 //                ->orWhere('content', 'like', '%'.$request->search.'%')
-                ->orderBy('updated_at', 'desc')
+                ->orderBy('created_at', 'desc')
                 ->cursorPaginate(
                     $perPage = 16,
-                    $columns = ['title', 'slug', 'updated_at', 'poster_link']
+                    $columns = ['title', 'slug', 'created_at', 'poster_link']
                 )
         );
     }
